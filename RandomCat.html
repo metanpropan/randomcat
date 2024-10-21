@@ -2,10 +2,78 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>RandomCat</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Hello Vue</title>
+    <!-- development version, includes helpful console warnings -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
+<div id="app">
+    <div class="container exmpl">
+        <div class="block wrapper exmpl">
+            <img :src="imgSrc" alt="">   
+        </div>
+        <button v-on:click="generationCats">Позвать кота</button>
+        <input v-model="message" placeholder="позови меня" />
 
+        <div id="v-model-select">
+            <select v-model="selected">
+              <option v-for="tag in this.tags">{{tag}}</option>
+            </select>
+            <button v-on:click="tagCat">Позвать кота по тегу</button>
+            <button v-on:click="gifCat">Гиф кот</button>
+          </div>
+    </div>
+</div>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            info: null,
+            idImg: null,
+            message: null,
+            imgSrc:null,
+            tags: null,
+            tagSrc: null,
+            test: null,
+            e: null,
+            selected: []
+        },
+        methods: {
+            generationCats(){
+                this.e++;
+                this.idImg = this.info[this.e]._id;
+             
+                if (this.message === null) {
+                    this.imgSrc = 'https://cataas.com/cat/'+this.idImg
+                }
+                               
+                else {
+                    this.imgSrc = 'https://cataas.com/cat/'+this.idImg+'/says/'+this.message
+                }
+                this.message = null;
+                console.log(this.tags)
+                console.log(this.selected)
+            },
+            tagCat (){
+                this.imgSrc = 'https://cataas.com/cat/'+this.selected ;
+                console.log(this.tags)
+            },
+            gifCat () {
+                this.imgSrc = 'https://cataas.com/cat/gif' ;
+            }
+
+        },
+        beforeMount () {
+            axios.get('https://cataas.com/api/cats?limit=50&skip=0')
+                .then(response => this.info = response.data);   
+        },
+        mounted () {
+            axios.get('https://cataas.com/api/tags')
+                .then(response => this.tags = response.data);   
+        }
+    });
+</script>
 </body>
-<script src="https://unpkg.com/vue@next"></script>
 </html>
