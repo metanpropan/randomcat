@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="style.css">
-    <title>Hello Vue</title>
-    <!-- development version, includes helpful console warnings -->
+    <title>RandomCat</title>
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
@@ -14,16 +13,35 @@
         <div class="block wrapper exmpl">
             <img :src="imgSrc" alt="">   
         </div>
-        <button v-on:click="generationCats">Позвать кота</button>
-        <input v-model="message" placeholder="позови меня" />
-
+        <div class="blockForm">
+            <div class="call">
+                <button v-on:click="generationCats">Позвать кота</button>
+                <input v-model="message" placeholder="позови меня" />
+            </div>
+            <div class="call">
+            <span>Выбери цвет текста</span>
+            <select v-model="newColor">
+                <option v-for="color in this.selectedColor">{{color}}</option>
+              </select>
+            </div>
+              <div class="call">
+              <span>Выбери размер текста</span>
+              <select v-model="newSize">
+                <option v-for="size in this.selectedSize">{{size}}</option>
+              </select>
+            </div>
+            <div class="call">
         <div id="v-model-select">
+            <button v-on:click="gifCat">Гиф кот</button>
+        </div>
+        <div class="call">
             <select v-model="selected">
               <option v-for="tag in this.tags">{{tag}}</option>
             </select>
             <button v-on:click="tagCat">Позвать кота по тегу</button>
-            <button v-on:click="gifCat">Гиф кот</button>
-          </div>
+            </div>
+        </div>
+        </div>
     </div>
 </div>
 <script>
@@ -38,7 +56,11 @@
             tagSrc: null,
             test: null,
             e: null,
-            selected: []
+            selected: [],
+            selectedSize:[24,34,45],
+            newSize: [],
+            selectedColor: ['red','green','blue'],
+            newColor: []
         },
         methods: {
             generationCats(){
@@ -50,7 +72,7 @@
                 }
                                
                 else {
-                    this.imgSrc = 'https://cataas.com/cat/'+this.idImg+'/says/'+this.message
+                    this.imgSrc = 'https://cataas.com/cat/'+this.idImg+'/says/'+this.message+'?fontSize='+this.newSize+'&fontColor='+this.newColor
                 }
                 this.message = null;
                 console.log(this.tags)
@@ -67,10 +89,8 @@
         },
         beforeMount () {
             axios.get('https://cataas.com/api/cats?limit=50&skip=0')
-                .then(response => this.info = response.data);   
-        },
-        mounted () {
-            axios.get('https://cataas.com/api/tags')
+                .then(response => this.info = response.data);  
+                axios.get('https://cataas.com/api/tags')
                 .then(response => this.tags = response.data);   
         }
     });
